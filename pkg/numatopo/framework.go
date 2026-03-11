@@ -73,6 +73,22 @@ func GetCpusDetail() map[string]v1alpha1.CPUInfo {
 	return nil
 }
 
+// GetGPUsDetail returns the GPU capability topology info
+func GetGPUsDetail() map[string]v1alpha1.GPUInfo {
+	for _, info := range numaMap {
+		obj := info.GetResTopoDetail()
+		gpuDetail, ok := obj.(map[string]v1alpha1.GPUInfo)
+		if !ok {
+			continue
+		}
+
+		return gpuDetail
+	}
+
+	return nil
+}
+
 func init() {
 	RegisterNumaType(NewCPUNumaInfo())
+	RegisterNumaType(NewGPUNumaInfo())
 }

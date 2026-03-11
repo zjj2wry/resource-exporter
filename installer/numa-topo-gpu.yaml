@@ -53,17 +53,23 @@ spec:
       labels:
         name: resource-topology
     spec:
+      nodeSelector:
+        dewu.com/service: "gpu"
+      tolerations:
+        - effect: NoSchedule
+          key: dewu.com/service
+          value: gpu
       serviceAccountName: resource-exporter-account
       containers:
         - name: resource-topology
-          image: volcanosh/numatopo:latest
-          imagePullPolicy: IfNotPresent
+          image: <internal>/numatopo:gpu-support-debug
+          imagePullPolicy: Always
           args:
             - --logtostderr
-            - --kubelet-conf=/host/kubeletconf/config.yaml
+            - --kubelet-conf=/host/kubeletconf/ack-managed-config.yaml
             - --cpu-manager-state=/host/kubelet/cpu_manager_state
             - --device-path=/host/device
-            - -v=4
+            - -v=6
             - 2>&1
           env:
             - name: MY_NODE_NAME
@@ -77,6 +83,15 @@ spec:
               mountPath: "/host/kubelet"
             - name: kubelet-config-path
               mountPath: "/host/kubeletconf"
+            - name: sys-devices
+              mountPath: "/host/sys/devices"
+              readOnly: true
+            - name: sys-bus-pci
+              mountPath: "/host/sys/bus/pci"
+              readOnly: true
+            - name: proc-nvidia
+              mountPath: "/host/proc/driver/nvidia"
+              readOnly: true
       volumes:
         - name: node-path
           hostPath:
@@ -87,3 +102,12 @@ spec:
         - name: kubelet-config-path
           hostPath:
             path: "/var/lib/kubelet"
+        - name: sys-devices
+          hostPath:
+            path: "/sys/devices"
+        - name: sys-bus-pci
+          hostPath:
+            path: "/sys/bus/pci"
+        - name: proc-nvidia
+          hostPath:
+            path: "/proc/driver/nvidia"

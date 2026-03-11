@@ -51,4 +51,5 @@ replace (
 	k8s.io/sample-cli-plugin => k8s.io/sample-cli-plugin v0.19.6
 	k8s.io/sample-controller => k8s.io/sample-controller v0.19.6
 	vbom.ml/util => github.com/fvbommel/sortorder v1.0.1
+	volcano.sh/apis => <my-fork-version>/apis v0.0.0-20260122083243-504e1f5c6f86
 )
